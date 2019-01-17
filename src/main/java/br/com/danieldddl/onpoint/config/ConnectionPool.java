@@ -47,7 +47,7 @@ public class ConnectionPool {
     }
 
     /**
-     * Reads from config.properties file stores in the resources folder.
+     * Reads from config.properties file stored in the resources folder.
      * Sets up the url, username, and password we are going to use to establish
      * a connection with the database.
      * */
