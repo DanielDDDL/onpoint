@@ -24,6 +24,7 @@
         <log4j.version>2.11.1</log4j.version>
         <dbcp.version>2.5.0</dbcp.version>
         <mysqlconnector.version>8.0.13</mysqlconnector.version>
+        <h2.version>1.4.197</h2.version>
     </properties>
 
     <dependencies>
@@ -44,6 +45,13 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysqlconnector.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+        </dependency>
+
     </dependencies>
     
 </project>
