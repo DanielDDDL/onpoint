@@ -1,10 +1,14 @@
--- TODO create the database and place here the script to start up the tables for the H2 database
-
-DROP TABLE IF EXISTS books;
-
-CREATE TABLE IF NOT EXISTS books (
-   id INT AUTO_INCREMENT PRIMARY KEY,
-   title VARCHAR(50) NOT NULL,
-   author VARCHAR(20) NOT NULL
+DROP TABLE IF EXISTS mark_type;
+CREATE TABLE mark_type (
+   id LONG AUTO_INCREMENT PRIMARY KEY,
+   name VARCHAR (255) NOT NULL
 );
 
+DROP TABLE IF EXISTS mark;
+CREATE TABLE mark (
+   id LONG AUTO_INCREMENT PRIMARY KEY,
+   when TIMESTAMP NOT NULL,
+   marked_date TIMESTAMP NOT NULL,
+   marked_type_id INT NOT NULL,
+   FOREIGN KEY (marked_type_id) REFERENCES mark_type(id)
+);

@@ -16,6 +16,12 @@ public class Mark {
         this.markType = markType;
     }
 
+    public Mark(LocalDateTime when, LocalDateTime markedDate, MarkType markType) {
+        this.when = when;
+        this.markedDate = markedDate;
+        this.markType = markType;
+    }
+
     //region getters and setters
     public Long getId () {
         return id;
@@ -49,4 +55,15 @@ public class Mark {
         this.markType = markType;
     }
     //endregion
+
+
+    @Override
+    public String toString() {
+        return "Mark{" +
+                "id=" + id +
+                ", when=" + when +
+                ", markedDate=" + markedDate +
+                ", markType=" + markType +
+                '}';
+    }
 }

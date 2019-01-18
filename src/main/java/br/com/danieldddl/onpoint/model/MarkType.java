@@ -27,4 +27,13 @@ public class MarkType {
         this.name = name;
     }
     //endregion
+
+
+    @Override
+    public String toString() {
+        return "MarkType{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

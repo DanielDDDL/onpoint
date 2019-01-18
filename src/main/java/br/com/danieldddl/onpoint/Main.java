@@ -1,10 +1,14 @@
 package br.com.danieldddl.onpoint;
 
 import br.com.danieldddl.onpoint.config.ConnectionPool;
+import br.com.danieldddl.onpoint.model.Mark;
+import br.com.danieldddl.onpoint.model.MarkType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Main {
 
@@ -12,36 +16,77 @@ public class Main {
 
     public static void main(String[] args) throws SQLException {
 
-        String insert = "INSERT INTO books (title, author) VALUES (?,?)";
-        for (int i = 0; i < 10; i++) {
-            try (Connection connection = ConnectionPool.getConnection();
-                 PreparedStatement ps = connection.prepareStatement(insert)) {
-
-                ps.clearParameters();
-
-                ps.setObject(1,"Livro x" + i);
-                ps.setObject(2, "Autor qualquer" + i);
-
-                ps.executeUpdate();
-
-            }
-        }
-
-        String select = "SELECT id, title, author FROM books";
+        String insertMarkType = "INSERT INTO mark_type (name) VALUES (?);";
         try (Connection connection = ConnectionPool.getConnection();
-             Statement stm = connection.createStatement();
-             ResultSet rs = stm.executeQuery(select)) {
+             PreparedStatement ps = connection.prepareStatement(insertMarkType)) {
 
-            while (rs.next()) {
-                Integer id = rs.getInt("id");
-                String title = rs.getString("title");
-                String author = rs.getString("author");
+            ps.setObject(1, "Saida para almoço");
+            ps.executeUpdate();
+        }
 
-                LOGGER.debug("Fetched book: {}:{} - {}", id, title, author);
+        Mark mark = new Mark(LocalDateTime.now(), LocalDateTime.now(), getMarkType());
+
+        String insertMark = "INSERT INTO mark (when, marked_date, marked_type_id) VALUES (?,?,?)";
+        try (Connection connection = ConnectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(insertMark)) {
+
+            ps.setObject(1, mark.getWhen());
+            ps.setObject(2, mark.getMarkedDate());
+            ps.setObject(3, mark.getMarkType().getId());
+
+            ps.executeUpdate();
+        }
+
+        Mark fetchMark = null;
+
+        String selectMark = "SELECT id, when, marked_date, marked_type_id FROM mark";
+        try (Connection connection = ConnectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(selectMark);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                LOGGER.debug("Just printing the id: {}", rs.getLong("marked_type_id"));
+
+                Long id = rs.getLong("id");
+                LocalDateTime when = rs.getTimestamp("when").toLocalDateTime();
+                LocalDateTime markedDate = rs.getTimestamp("marked_date").toLocalDateTime();
+
+                LOGGER.debug("Getting mark type one more time");
+                MarkType markType = getMarkType();
+
+                Mark fetchedMark = new Mark(id, when, markedDate, markType);
+
+                LOGGER.debug(fetchedMark.toString());
             }
 
         }
 
+    }
+
+    private static MarkType getMarkType () throws SQLException {
+
+        LOGGER.debug("Getting mark type");
+
+        MarkType mt = null;
+
+        String selectMarkType = "SELECT id, name FROM mark_type;";
+        try (Connection connection = ConnectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(selectMarkType);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+
+                LOGGER.debug("Found one.");
+
+                Long id = rs.getLong("id");
+                String name = rs.getString("name");
+                mt = new MarkType(id, name);
+
+                LOGGER.debug(mt.toString());
+            }
+        }
+
+        return mt;
     }
 
 }
