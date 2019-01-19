@@ -26,7 +26,7 @@ public class Main {
 
         Mark mark = new Mark(LocalDateTime.now(), LocalDateTime.now(), getMarkType());
 
-        String insertMark = "INSERT INTO mark (when, marked_date, marked_type_id) VALUES (?,?,?)";
+        String insertMark = "INSERT INTO mark (when_happened, marked_date, marked_type_id) VALUES (?,?,?)";
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(insertMark)) {
 
@@ -39,7 +39,7 @@ public class Main {
 
         Mark fetchMark = null;
 
-        String selectMark = "SELECT id, when, marked_date, marked_type_id FROM mark";
+        String selectMark = "SELECT id, when_happened, marked_date, marked_type_id FROM mark";
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(selectMark);
              ResultSet rs = ps.executeQuery()) {
@@ -48,7 +48,7 @@ public class Main {
                 LOGGER.debug("Just printing the id: {}", rs.getLong("marked_type_id"));
 
                 Long id = rs.getLong("id");
-                LocalDateTime when = rs.getTimestamp("when").toLocalDateTime();
+                LocalDateTime when = rs.getTimestamp("when_happened").toLocalDateTime();
                 LocalDateTime markedDate = rs.getTimestamp("marked_date").toLocalDateTime();
 
                 LOGGER.debug("Getting mark type one more time");

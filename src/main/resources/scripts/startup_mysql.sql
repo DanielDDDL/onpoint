@@ -1,4 +1,19 @@
-DROP DATABASE IF EXISTS onpoint;
-CREATE DATABASE onpoint;
+USE onpoint;
 
--- TODO place here you table creation scripts
+DROP TABLE IF EXISTS mark;
+DROP TABLE IF EXISTS mark_type;
+
+CREATE TABLE `mark_type` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=INNODB;
+
+CREATE TABLE `mark` (
+  `id` INT AUTO_INCREMENT,
+  `when_happened` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `marked_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `marked_type_id` INT NOT NULL ,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`marked_type_id`) REFERENCES mark_type(`id`)
+) ENGINE=INNODB;
