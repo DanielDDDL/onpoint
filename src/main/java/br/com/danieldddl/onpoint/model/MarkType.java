@@ -2,20 +2,24 @@ package br.com.danieldddl.onpoint.model;
 
 public class MarkType {
 
-    private Long id;
+    private Integer id;
     private String name;
 
-    public MarkType(Long id, String name) {
+    public MarkType(Integer id, String name) {
         this.id = id;
+        this.name = name.toLowerCase();
+    }
+
+    public MarkType(String name) {
         this.name = name;
     }
 
     //region getters and setters
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -24,7 +28,7 @@ public class MarkType {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name.toLowerCase();
     }
     //endregion
 

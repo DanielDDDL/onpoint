@@ -4,12 +4,12 @@ import java.time.LocalDateTime;
 
 public class Mark {
 
-    private Long id;
+    private Integer id;
     private LocalDateTime when;
     private LocalDateTime markedDate;
     private MarkType markType;
 
-    public Mark(Long id, LocalDateTime when, LocalDateTime markedDate, MarkType markType) {
+    public Mark(Integer id, LocalDateTime when, LocalDateTime markedDate, MarkType markType) {
         this.id = id;
         this.when = when;
         this.markedDate = markedDate;
@@ -23,11 +23,11 @@ public class Mark {
     }
 
     //region getters and setters
-    public Long getId () {
+    public Integer getId () {
         return id;
     }
 
-    public void setId (Long id) {
+    public void setId (Integer id) {
         this.id = id;
     }
 
@@ -55,8 +55,6 @@ public class Mark {
         this.markType = markType;
     }
     //endregion
-
-
     @Override
     public String toString() {
         return "Mark{" +
