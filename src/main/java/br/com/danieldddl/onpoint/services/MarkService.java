@@ -7,6 +7,7 @@ import br.com.danieldddl.onpoint.model.MarkType;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 public class MarkService {
 
@@ -60,19 +61,18 @@ public class MarkService {
     }
 
     public List<Mark> listBetween (LocalDateTime startingDate, LocalDateTime endingDate) {
+        //TODO this
         return null;
     }
 
     public List<Mark> listSince (LocalDateTime startingDate) {
+        //TODO this
         return null;
     }
 
     public List<Mark> list (Integer numberOfMarks) {
-        return null;
-    }
-
-    public void generateTable (LocalDateTime startingDate, LocalDateTime endingDate) {
-
+        Objects.requireNonNull(numberOfMarks);
+        return markDao.listLastMarkes(numberOfMarks);
     }
 
 }

@@ -1,7 +1,6 @@
 package br.com.danieldddl.onpoint;
 
 import br.com.danieldddl.onpoint.config.ConnectionPool;
-import br.com.danieldddl.onpoint.dao.api.IMarkDao;
 import br.com.danieldddl.onpoint.dao.impl.MarkTypeDaoImpl;
 import br.com.danieldddl.onpoint.model.Mark;
 import br.com.danieldddl.onpoint.model.MarkType;
@@ -9,8 +8,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
-import java.time.LocalDateTime;
-import java.util.Objects;
 
 public class Main {
 
@@ -18,10 +15,34 @@ public class Main {
 
     public static void main(String[] args) throws SQLException {
 
+
         MarkTypeDaoImpl markTypeDao = new MarkTypeDaoImpl();
 
         MarkType markType = new MarkType("Lunch");
-        markTypeDao.insert(markType);
+        MarkType persisted = markTypeDao.insert(markType);
+
+        Mark toBePersisted = new Mark(markType);
+//
+//        String insert = "INSERT INTO mark (when_happened, marked_date, marked_type_id) VALUES (?,?,?)";
+//        try (Connection connection = ConnectionPool.getConnection();
+//             PreparedStatement ps = connection.prepareStatement(insert)) {
+//
+//            ps.setObject(1, toBePersisted.getWhen());
+//            ps.setObject(2, toBePersisted.getMarkedDate());
+//            ps.setObject(3, toBePersisted.getMarkType().getId());
+//
+//            ps.executeUpdate();
+//        }
+        String insert = "INSERT INTO mark (when_happened, marked_date, marked_type_id) VALUES (?,?,?)";
+        try (Connection connection = ConnectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(insert)) {
+
+            ps.setObject(1, toBePersisted.getWhen());
+            ps.setObject(2, toBePersisted.getMarkedDate());
+            ps.setObject(3, null);
+
+            ps.executeUpdate();
+        }
 
 
         /*

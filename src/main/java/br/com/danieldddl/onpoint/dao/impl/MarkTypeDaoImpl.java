@@ -25,6 +25,12 @@ public class MarkTypeDaoImpl implements IMarkTypeDao {
                                                 "FROM mark_type " +
                                                 "WHERE name = ?";
 
+    private static final String SELECT_BY_ID  = "SELECT id, name " +
+                                                "FROM mark_type " +
+                                                "WHERE id = ?";
+
+
+
     @Override
     public MarkType getAndSaveMarkTypeByName(String name) {
 
@@ -45,15 +51,25 @@ public class MarkTypeDaoImpl implements IMarkTypeDao {
             ps.setString(1, name);
 
             try (ResultSet rs = ps.executeQuery()) {
+                return extractMarkTypeFromResultSet(rs);
+            }
 
-                if (rs.next()) {
-                    Integer fetchedId = rs.getInt("id");
-                    String fetchedName = rs.getString("name");
+        } catch (SQLException e) {
+            throw new IllegalStateException("Error while retrieving MarkType by its name", e);
+        }
 
-                    return new MarkType(fetchedId, fetchedName);
-                }
+    }
 
-                return null;
+    @Override
+    public MarkType findMarkTypeById (Integer id) {
+
+        try (Connection connection = ConnectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(SELECT_BY_ID)) {
+
+            ps.setObject(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                return extractMarkTypeFromResultSet(rs);
             }
 
         } catch (SQLException e) {
@@ -116,6 +132,27 @@ public class MarkTypeDaoImpl implements IMarkTypeDao {
         } catch (SQLException e) {
             throw new IllegalStateException("Error while checking if MarkType is unique", e);
         }
+    }
+
+    /**
+     * This method assumes that we have a "clean" ResultSet,
+     * which means that we are going to get the first result
+     * of the current rs, if there is a next row.
+     *
+     * This does not close the ResultSet passed as parameter.
+     * */
+    private MarkType extractMarkTypeFromResultSet (ResultSet rs) throws SQLException {
+
+
+        if (rs.next()) {
+            Integer fetchedId = rs.getInt("id");
+            String fetchedName = rs.getString("name");
+
+            return new MarkType(fetchedId, fetchedName);
+        }
+
+        return null;
+
     }
 
 }
