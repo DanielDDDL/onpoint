@@ -68,7 +68,7 @@ public class MarkDaoImpl implements IMarkDao {
     }
 
     @Override
-    public List<Mark> listLastMarkes (int amount) {
+    public List<Mark> listLastMarks (int amount) {
 
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(SELECT_LIMIT)) {

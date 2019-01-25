@@ -7,5 +7,5 @@ import java.util.List;
 public interface IMarkDao {
 
     Mark persist(Mark mark);
-    List<Mark> listLastMarkes(int amount);
+    List<Mark> listLastMarks(int amount);
 }
