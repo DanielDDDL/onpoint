@@ -51,8 +51,8 @@ public class ConnectionPool {
 
         //TODO read about the different types of transaction isolation levels
         //TODO and set the most appropriated value in here
-        ds.setDefaultTransactionIsolation(TRANSACTION_READ_COMMITTED);
-        ds.setDefaultAutoCommit(false);
+//        ds.setDefaultTransactionIsolation(TRANSACTION_READ_COMMITTED);
+//        ds.setDefaultAutoCommit(false);
 
         return ds;
     }

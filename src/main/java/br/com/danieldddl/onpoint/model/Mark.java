@@ -1,5 +1,6 @@
 package br.com.danieldddl.onpoint.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Mark {
@@ -8,6 +9,20 @@ public class Mark {
     private LocalDateTime when;
     private LocalDateTime markedDate;
     private MarkType markType;
+
+    public Mark () {
+
+        //to ensure the same date when saving
+        LocalDateTime now = LocalDateTime.now();
+
+        this.when = now;
+        this.markedDate = now;
+    }
+
+    public Mark (LocalDateTime when) {
+        this.when = when;
+        this.markedDate = LocalDateTime.now();
+    }
 
     public Mark(Integer id, LocalDateTime when, LocalDateTime markedDate, MarkType markType) {
         this.id = id;
@@ -19,6 +34,22 @@ public class Mark {
     public Mark(LocalDateTime when, LocalDateTime markedDate, MarkType markType) {
         this.when = when;
         this.markedDate = markedDate;
+        this.markType = markType;
+    }
+
+    public Mark (LocalDateTime when, MarkType markType) {
+        this.when = when;
+        this.markedDate = LocalDateTime.now();
+        this.markType = markType;
+    }
+
+    public Mark (MarkType markType) {
+
+        //to ensure the same date when saving
+        LocalDateTime now = LocalDateTime.now();
+
+        this.when = now;
+        this.markedDate = now;
         this.markType = markType;
     }
 
@@ -55,6 +86,7 @@ public class Mark {
         this.markType = markType;
     }
     //endregion
+
     @Override
     public String toString() {
         return "Mark{" +

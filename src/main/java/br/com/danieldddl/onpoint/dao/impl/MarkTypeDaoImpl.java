@@ -26,16 +26,17 @@ public class MarkTypeDaoImpl implements IMarkTypeDao {
                                                 "WHERE name = ?";
 
     @Override
-    public Integer getMarkTypeIdByName(String name) {
+    public MarkType getAndSaveMarkTypeByName(String name) {
 
         MarkType markType = findMarkTypeByName(name);
         if (markType == null) {
             markType = insert(new MarkType(name));
         }
 
-        return markType.getId();
+        return markType;
     }
 
+    @Override
     public MarkType findMarkTypeByName (String name) {
 
         try (Connection connection = ConnectionPool.getConnection();
@@ -61,6 +62,7 @@ public class MarkTypeDaoImpl implements IMarkTypeDao {
 
     }
 
+    @Override
     public MarkType insert (MarkType markType) {
 
         Objects.requireNonNull(markType);
@@ -94,6 +96,7 @@ public class MarkTypeDaoImpl implements IMarkTypeDao {
         }
     }
 
+    @Override
     public boolean existsMarkTypeWithName(String name) {
 
         try (Connection connection = ConnectionPool.getConnection();
