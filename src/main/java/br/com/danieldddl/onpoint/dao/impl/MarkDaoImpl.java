@@ -29,7 +29,11 @@ public class MarkDaoImpl implements IMarkDao {
     private static final String SELECT_SINCE = "SELECT id, when_happened, marked_date, marked_type_id " +
                                                "FROM mark " +
                                                "WHERE when_happened > ?";
-    
+
+    private static final String SELECT_BETWEEN = "SELECT id, when_happened, marked_date, marked_type_id " +
+                                                 "FROM mark " +
+                                                 "WHERE when_happened BETWEEN ? AND ?";
+
     private IMarkTypeDao markTypeDao;
 
     public MarkDaoImpl (IMarkTypeDao markTypeDao) {
@@ -90,7 +94,7 @@ public class MarkDaoImpl implements IMarkDao {
     }
 
     @Override
-    public List<Mark> listSince (LocalDateTime sinceWhen) {
+    public List<Mark> listSince(LocalDateTime sinceWhen) {
 
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(SELECT_SINCE)) {
@@ -104,6 +108,24 @@ public class MarkDaoImpl implements IMarkDao {
 
         } catch (SQLException e) {
             throw new IllegalStateException("Error while retrieving Marks since a specific date", e);
+        }
+    }
+
+    @Override
+    public List<Mark> listBetween (LocalDateTime lowerDate, LocalDateTime upperDate) {
+
+        try (Connection connection = ConnectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(SELECT_BETWEEN)) {
+
+            ps.setObject(1, lowerDate);
+            ps.setObject(2, upperDate);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                return extractListOfMarksFromResultSet(rs);
+            }
+
+        } catch (SQLException e) {
+            throw new IllegalStateException("Error while retrieving Marks between two dates", e);
         }
     }
 

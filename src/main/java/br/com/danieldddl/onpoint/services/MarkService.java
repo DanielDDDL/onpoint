@@ -60,9 +60,12 @@ public class MarkService {
         return markDao.persist(simpleMark);
     }
 
-    public List<Mark> listBetween (LocalDateTime startingDate, LocalDateTime endingDate) {
-        //TODO this
-        return null;
+    public List<Mark> listBetween (LocalDateTime firstDate, LocalDateTime secondDate) {
+
+        //guaranteed for the first argument to be the lower date
+        return firstDate.isBefore(secondDate) ?
+                markDao.listBetween(firstDate, secondDate) :
+                markDao.listBetween(secondDate, firstDate);
     }
 
     public List<Mark> listSince (LocalDateTime startingDate) {
