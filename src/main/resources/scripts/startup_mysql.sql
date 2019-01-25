@@ -13,7 +13,7 @@ CREATE TABLE `mark` (
   id INT AUTO_INCREMENT,
   when_happened TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   marked_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  marked_type_id INT NOT NULL ,
+  marked_type_id INT,
   PRIMARY KEY (id),
   FOREIGN KEY (marked_type_id) REFERENCES mark_type(id)
 ) ENGINE=INNODB;
