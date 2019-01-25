@@ -26,6 +26,10 @@ public class MarkDaoImpl implements IMarkDao {
                                                "ORDER BY when_happened ASC " +
                                                "LIMIT ?;";
 
+    private static final String SELECT_SINCE = "SELECT id, when_happened, marked_date, marked_type_id " +
+                                               "FROM mark " +
+                                               "WHERE when_happened > ?";
+    
     private IMarkTypeDao markTypeDao;
 
     public MarkDaoImpl (IMarkTypeDao markTypeDao) {
@@ -73,33 +77,68 @@ public class MarkDaoImpl implements IMarkDao {
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(SELECT_LIMIT)) {
 
-            List<Mark> lastMarks = new ArrayList<>();
-
             //number of rows we are going to retrieve
             ps.setObject(1, amount);
 
             try (ResultSet rs = ps.executeQuery()) {
-
-                while (rs.next()) {
-
-                    Integer id = rs.getInt("id");
-                    LocalDateTime when = rs.getTimestamp("when_happened").toLocalDateTime();
-                    LocalDateTime markedDate = rs.getTimestamp("marked_date").toLocalDateTime();
-
-                    //checking if markTypeId is null and setting markType attribute properly
-                    Integer markedTypeId = rs.getInt("marked_type_id");
-                    MarkType markType = rs.wasNull() ? null : markTypeDao.findMarkTypeById(markedTypeId);
-
-                    lastMarks.add(new Mark(id, when, markedDate, markType));
-                }
-
-                return lastMarks;
+                return extractListOfMarksFromResultSet(rs);
             }
 
         } catch (SQLException e) {
             throw new IllegalStateException("Problem while trying to retrieve marks using limit clause", e);
         }
+    }
 
+    @Override
+    public List<Mark> listSince (LocalDateTime sinceWhen) {
+
+        try (Connection connection = ConnectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(SELECT_SINCE)) {
+
+            //the date we are going to use as base
+            ps.setObject(1, sinceWhen);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                return extractListOfMarksFromResultSet(rs);
+            }
+
+        } catch (SQLException e) {
+            throw new IllegalStateException("Error while retrieving Marks since a specific date", e);
+        }
+    }
+
+    /**
+     * This methods extract a Mark from the current row of a ResultSet.
+     * This does not close the ResultSet passed as parameter.
+     * */
+    private Mark extractMarkFromResultSet (ResultSet rs) throws SQLException {
+
+        Integer id = rs.getInt("id");
+        LocalDateTime when = rs.getTimestamp("when_happened").toLocalDateTime();
+        LocalDateTime markedDate = rs.getTimestamp("marked_date").toLocalDateTime();
+
+        //checking if markTypeId is null and setting markType attribute properly
+        Integer markedTypeId = rs.getInt("marked_type_id");
+        MarkType markType = rs.wasNull() ? null : markTypeDao.findMarkTypeById(markedTypeId);
+
+        return new Mark(id, when, markedDate, markType);
+    }
+
+    /**
+     * This methods assumes that we have a clean ResultSet. We are
+     * going to extract all Marks from ResultSet passed as parameter.
+     * This does not close such ResultSet.
+     * */
+    private List<Mark> extractListOfMarksFromResultSet (ResultSet rs) throws SQLException {
+
+        List<Mark> marks = new ArrayList<>();
+
+        while (rs.next()) {
+            Mark extractMark = extractMarkFromResultSet(rs);
+            marks.add(extractMark);
+        }
+
+        return marks;
     }
 
 }

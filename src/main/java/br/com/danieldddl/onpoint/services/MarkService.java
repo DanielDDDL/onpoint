@@ -66,13 +66,12 @@ public class MarkService {
     }
 
     public List<Mark> listSince (LocalDateTime startingDate) {
-        //TODO this
-        return null;
+        return markDao.listSince(startingDate);
     }
 
     public List<Mark> list (Integer numberOfMarks) {
         Objects.requireNonNull(numberOfMarks);
-        return markDao.listLastMarkes(numberOfMarks);
+        return markDao.listLastMarks(numberOfMarks);
     }
 
 }
