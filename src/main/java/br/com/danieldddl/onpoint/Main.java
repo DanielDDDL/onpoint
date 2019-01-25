@@ -1,6 +1,8 @@
 package br.com.danieldddl.onpoint;
 
 import br.com.danieldddl.onpoint.config.ConnectionPool;
+import br.com.danieldddl.onpoint.dao.api.IMarkDao;
+import br.com.danieldddl.onpoint.dao.impl.MarkTypeDaoImpl;
 import br.com.danieldddl.onpoint.model.Mark;
 import br.com.danieldddl.onpoint.model.MarkType;
 import org.apache.logging.log4j.LogManager;
@@ -15,6 +17,14 @@ public class Main {
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) throws SQLException {
+
+        MarkTypeDaoImpl markTypeDao = new MarkTypeDaoImpl();
+
+        MarkType markType = new MarkType("Lunch");
+        markTypeDao.insert(markType);
+
+
+        /*
 
         String insertMarkType = "INSERT INTO mark_type (name) VALUES (?);";
         try (Connection connection = ConnectionPool.getConnection();
@@ -61,8 +71,11 @@ public class Main {
 
         }
 
+        */
+
     }
 
+    /*
     private static MarkType getMarkType () throws SQLException {
 
         LOGGER.debug("Getting mark type");
@@ -88,5 +101,6 @@ public class Main {
 
         return mt;
     }
+    */
 
 }
