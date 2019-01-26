@@ -5,6 +5,7 @@ import br.com.danieldddl.onpoint.dao.api.IMarkDao;
 import br.com.danieldddl.onpoint.dao.api.IMarkTypeDao;
 import br.com.danieldddl.onpoint.model.Mark;
 import br.com.danieldddl.onpoint.model.MarkType;
+import com.google.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,7 +24,7 @@ public class MarkDaoImpl implements IMarkDao {
 
     private static final String SELECT_LIMIT = "SELECT id, when_happened, marked_date, marked_type_id " +
                                                "FROM mark " +
-                                               "ORDER BY when_happened ASC " +
+                                               "ORDER BY when_happened DESC " +
                                                "LIMIT ?;";
 
     private static final String SELECT_SINCE = "SELECT id, when_happened, marked_date, marked_type_id " +
@@ -36,6 +37,7 @@ public class MarkDaoImpl implements IMarkDao {
 
     private IMarkTypeDao markTypeDao;
 
+    @Inject
     public MarkDaoImpl (IMarkTypeDao markTypeDao) {
         this.markTypeDao = markTypeDao;
     }

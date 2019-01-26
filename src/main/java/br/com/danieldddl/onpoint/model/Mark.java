@@ -1,6 +1,5 @@
 package br.com.danieldddl.onpoint.model;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Mark {

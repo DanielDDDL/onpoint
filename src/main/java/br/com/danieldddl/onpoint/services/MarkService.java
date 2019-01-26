@@ -5,6 +5,7 @@ import br.com.danieldddl.onpoint.dao.api.IMarkTypeDao;
 import br.com.danieldddl.onpoint.model.Mark;
 import br.com.danieldddl.onpoint.model.MarkType;
 
+import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -17,6 +18,7 @@ public class MarkService {
     private IMarkDao markDao;
     private IMarkTypeDao markTypeDao;
 
+    @Inject
     public MarkService (IMarkDao markDao, IMarkTypeDao markTypeDao) {
         this.markDao = markDao;
         this.markTypeDao = markTypeDao;
