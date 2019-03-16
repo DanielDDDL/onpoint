@@ -7,179 +7,174 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import jdk.nashorn.internal.runtime.ParserException;
 import org.apache.commons.cli.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
-    private static final Logger LOGGER = LogManager.getLogger(Main.class);
-
-    private static final Scanner ler = new Scanner(System.in);
+    private static final String OPTION_POINT = "point";
+    private static final String OPTION_SINCE = "since";
+    private static final String OPTION_BETWEEN = "between";
+    private static final String OPTION_HELP = "help";
+    private static final String OPTION_MARK = "mark";
+    private static final String OPTION_ARRIVAL = "arrival";
+    private static final String OPTION_LEAVING = "leaving";
 
     public static void main(String[] args) {
 
-        for (int i = 0; i < 5; i++) {
+        Injector injector = Guice.createInjector(new MarkServiceModule());
+        MarkService markService = injector.getInstance(MarkService.class);
 
-            args = ler.nextLine().split(" ");
+        Option points = Option.builder("p")
+                .longOpt(OPTION_POINT)
+                .desc("Get the last n points")
+                .required(false)
+                .numberOfArgs(1)
+                .optionalArg(false)
+                .build();
 
-            Injector injector = Guice.createInjector(new MarkServiceModule());
-            MarkService markService = injector.getInstance(MarkService.class);
+        Option since = Option.builder("s")
+                .longOpt(OPTION_SINCE)
+                .desc("Get all points since informed date")
+                .required(false)
+                .numberOfArgs(1)
+                .optionalArg(false)
+                .build();
 
-            Option points = Option.builder("p")
-                    .longOpt("point")
-                    .desc("Get the last n points")
-                    .required(false)
-                    .numberOfArgs(1)
-                    .optionalArg(false)
-                    .build();
+        Option between = Option.builder("b")
+                .longOpt(OPTION_BETWEEN)
+                .desc("Get all points between two informed dates")
+                .required(false)
+                .numberOfArgs(2)
+                .optionalArg(false)
+                .build();
 
-            Option since = Option.builder("s")
-                    .longOpt("since")
-                    .desc("Get all points since informed date")
-                    .required(false)
-                    .numberOfArgs(1)
-                    .optionalArg(false)
-                    .build();
+        Option help = Option.builder("h")
+                .longOpt(OPTION_HELP)
+                .desc("Print all information about commands you can use")
+                .required(false)
+                .numberOfArgs(0)
+                .build();
 
-            Option between = Option.builder("b")
-                    .longOpt("between")
-                    .desc("Get all points between two informed dates")
-                    .required(false)
-                    .numberOfArgs(2)
-                    .optionalArg(false)
-                    .build();
+        Option mark = Option.builder("m")
+                .longOpt(OPTION_MARK)
+                .desc("Create a simple mark without a MarkType")
+                .required(false)
+                .numberOfArgs(1)
+                .optionalArg(true)
+                .build();
 
-            Option help = Option.builder("h")
-                    .longOpt("help")
-                    .desc("Print all information about commands you can use")
-                    .required(false)
-                    .numberOfArgs(0)
-                    .build();
+        Option arrival = Option.builder("a")
+                .longOpt(OPTION_ARRIVAL)
+                .desc("Create a arrival mark with the specified date, " +
+                        "if existing. If not, use current date")
+                .required(false)
+                .numberOfArgs(1)
+                .optionalArg(true)
+                .build();
 
-            Option mark = Option.builder("m")
-                    .longOpt("mark")
-                    .desc("Create a simple mark without a MarkType")
-                    .required(false)
-                    .numberOfArgs(1)
-                    .optionalArg(true)
-                    .build();
+        Option leaving = Option.builder("l")
+                .longOpt(OPTION_LEAVING)
+                .desc("Create a leaving mark with the specified date, " +
+                        "if existing. If not, use current date")
+                .required(false)
+                .numberOfArgs(1)
+                .optionalArg(true)
+                .build();
 
-            Option arrival = Option.builder("a")
-                    .longOpt("arrival")
-                    .desc("Create a arrival mark with the specified date, " +
-                            "if existing. If not, use current date")
-                    .required(false)
-                    .numberOfArgs(1)
-                    .optionalArg(true)
-                    .build();
+        Options options = new Options();
+        options.addOption(points);
+        options.addOption(since);
+        options.addOption(between);
+        options.addOption(mark);
+        options.addOption(arrival);
+        options.addOption(leaving);
+        options.addOption(help);
 
-            Option leaving = Option.builder("l")
-                    .longOpt("leaving")
-                    .desc("Create a leaving mark with the specified date, " +
-                            "if existing. If not, use current date")
-                    .required(false)
-                    .numberOfArgs(1)
-                    .optionalArg(true)
-                    .build();
+        try {
 
-            Options options = new Options();
-            options.addOption(points);
-            options.addOption(since);
-            options.addOption(between);
-            options.addOption(mark);
-            options.addOption(arrival);
-            options.addOption(leaving);
-            options.addOption(help);
+            DefaultParser parser = new DefaultParser();
+            CommandLine commandLine = parser.parse(options, args);
 
-            try {
-
-                DefaultParser parser = new DefaultParser();
-                CommandLine commandLine = parser.parse(options, args);
-
-                //we just want one of the options, and nothing else
-                if (commandLine.getOptions().length != 1) {
-                    throw new ParseException("Problem trying to parse given commands.");
-                }
-
-                if (commandLine.hasOption("point")) {
-
-                    int numberOfArgs = Integer.parseInt(commandLine.getOptionValues("point")[0]);
-
-                    List<Mark> fetchedMarks = markService.list(numberOfArgs);
-                    printAllMarks(fetchedMarks);
-
-                } else if (commandLine.hasOption("since")) {
-
-                    String rawDate = commandLine.getOptionValues("since")[0];
-
-                    LocalDateTime sinceDate = extractDateFromString(rawDate);
-                    List<Mark> sinceMarks = markService.listSince(sinceDate);
-                    printAllMarks(sinceMarks);
-
-                } else if (commandLine.hasOption("between")) {
-
-                    String firstRawDate = commandLine.getOptionValues("between")[0];
-                    String secondRawDate = commandLine.getOptionValues("between")[1];
-
-                    LocalDateTime firstDate = extractDateFromString(firstRawDate);
-                    LocalDateTime secondDate = extractDateFromString(secondRawDate);
-
-                    List<Mark> betweenMarks = markService.listBetween(firstDate, secondDate);
-                    printAllMarks(betweenMarks);
-
-                } else if (commandLine.hasOption("mark")) {
-
-                    if (commandLine.getArgList().isEmpty()) {
-                        markService.simpleMark();
-                    } else {
-                        String rawDate = commandLine.getOptionValues("mark")[0];
-
-                        LocalDateTime markDate = extractDateFromString(rawDate);
-                        markService.simpleMark(markDate);
-                    }
-
-                } else if (commandLine.hasOption("arrival")) {
-
-                    if (commandLine.getArgList().isEmpty()) {
-                        markService.markArrival();
-                    } else {
-                        String rawDate = commandLine.getOptionValues("arrival")[0];
-
-                        LocalDateTime markDate = extractDateFromString(rawDate);
-                        markService.markArrival(markDate);
-                    }
-                } else if (commandLine.hasOption("leaving")) {
-
-                    if (commandLine.getArgList().isEmpty()) {
-                        markService.markLeaving();
-                    } else {
-                        String rawDate = commandLine.getOptionValues("leaving")[0];
-
-                        LocalDateTime markDate = extractDateFromString(rawDate);
-                        markService.markLeaving(markDate);
-                    }
-
-                } else if (commandLine.hasOption("help")) {
-                    HelpFormatter formatter = new HelpFormatter();
-                    formatter.printHelp("Onpoint", options);
-                }
-
-
-
-            } catch (ParseException e) {
-                System.err.println(e.getMessage());
+            //we just want one of the options, and nothing else
+            if (commandLine.getOptions().length != 1) {
+                throw new ParseException("Problem trying to parse given commands.");
             }
-        }
 
+            if (commandLine.hasOption(OPTION_POINT)) {
+
+                int numberOfArgs = Integer.parseInt(commandLine.getOptionValues(OPTION_POINT)[0]);
+
+                List<Mark> fetchedMarks = markService.list(numberOfArgs);
+                printAllMarks(fetchedMarks);
+
+            } else if (commandLine.hasOption(OPTION_SINCE)) {
+
+                String rawDate = commandLine.getOptionValues(OPTION_SINCE)[0];
+
+                LocalDateTime sinceDate = extractDateFromString(rawDate);
+                List<Mark> sinceMarks = markService.listSince(sinceDate);
+                printAllMarks(sinceMarks);
+
+            } else if (commandLine.hasOption(OPTION_BETWEEN)) {
+
+                String firstRawDate = commandLine.getOptionValues(OPTION_BETWEEN)[0];
+                String secondRawDate = commandLine.getOptionValues(OPTION_BETWEEN)[1];
+
+                LocalDateTime firstDate = extractDateFromString(firstRawDate);
+                LocalDateTime secondDate = extractDateFromString(secondRawDate);
+
+                List<Mark> betweenMarks = markService.listBetween(firstDate, secondDate);
+                printAllMarks(betweenMarks);
+
+            } else if (commandLine.hasOption(OPTION_MARK)) {
+
+                if (commandLine.getArgList().isEmpty()) {
+                    markService.simpleMark();
+                } else {
+                    String rawDate = commandLine.getOptionValues(OPTION_MARK)[0];
+
+                    LocalDateTime markDate = extractDateFromString(rawDate);
+                    markService.simpleMark(markDate);
+                }
+
+            } else if (commandLine.hasOption(OPTION_ARRIVAL)) {
+
+                if (commandLine.getArgList().isEmpty()) {
+                    markService.markArrival();
+                } else {
+                    String rawDate = commandLine.getOptionValues(OPTION_ARRIVAL)[0];
+
+                    LocalDateTime markDate = extractDateFromString(rawDate);
+                    markService.markArrival(markDate);
+                }
+            } else if (commandLine.hasOption(OPTION_LEAVING)) {
+
+                if (commandLine.getArgList().isEmpty()) {
+                    markService.markLeaving();
+                } else {
+                    String rawDate = commandLine.getOptionValues(OPTION_LEAVING)[0];
+
+                    LocalDateTime markDate = extractDateFromString(rawDate);
+                    markService.markLeaving(markDate);
+                }
+
+            } else if (commandLine.hasOption(OPTION_HELP)) {
+                HelpFormatter formatter = new HelpFormatter();
+                formatter.printHelp("Onpoint", options);
+            }
+
+
+
+        } catch (ParseException e) {
+            System.err.println(e.getMessage());
+        }
     }
+
 
     private static LocalDateTime extractDateFromString (String raw) {
 
@@ -197,10 +192,9 @@ public class Main {
     }
 
     private static String extractStringFromDate (LocalDateTime date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        String formattedDateTime = date.format(formatter);
 
-        return formattedDateTime;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return formatter.format(date);
     }
 
     private static void printAllMarks (List<Mark> marks) {
@@ -209,7 +203,7 @@ public class Main {
 
             System.out.printf("mark %d %n", mark.getId());
             System.out.printf("mark of type %s %n",
-                                (mark.getMarkType() == null ? "undefined" : mark.getMarkType().getName()));
+                    (mark.getMarkType() == null ? "undefined" : mark.getMarkType().getName()));
             System.out.printf("when marked %s%n", extractStringFromDate(mark.getWhen()));
             System.out.printf("marked date %s%n%n", extractStringFromDate(mark.getMarkedDate()));
 
