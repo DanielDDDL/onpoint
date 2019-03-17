@@ -1,35 +1,26 @@
 package br.com.danieldddl.onpoint.dao.impl;
 
 import br.com.danieldddl.onpoint.config.ConnectionPool;
+import br.com.danieldddl.onpoint.config.QueryLoader;
 import br.com.danieldddl.onpoint.dao.api.IMarkTypeDao;
 import br.com.danieldddl.onpoint.model.MarkType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.Objects;
 
 public class MarkTypeDaoImpl implements IMarkTypeDao {
 
-    private static final Logger LOGGER = LogManager.getLogger(MarkTypeDaoImpl.class);
+    private String insertQuery;
+    private String selectExists;
+    private String selectValues;
+    private String selectById;
 
-    private static final String INSERT_QUERY =  "INSERT INTO mark_type (name) " +
-                                                "VALUES (?)";
-
-    private static final String SELECT_EXISTS = "SELECT count(*) " +
-                                                "AS total " +
-                                                "FROM mark_type " +
-                                                "WHERE name = ?";
-
-    private static final String SELECT_VALUES = "SELECT id, name " +
-                                                "FROM mark_type " +
-                                                "WHERE name = ?";
-
-    private static final String SELECT_BY_ID  = "SELECT id, name " +
-                                                "FROM mark_type " +
-                                                "WHERE id = ?";
-
-
+    public MarkTypeDaoImpl () {
+        this.insertQuery = QueryLoader.get("INSERT_MARK_TYPE");
+        this.selectExists = QueryLoader.get("SELECT_EXISTS_MARK_TYPE");
+        this.selectValues = QueryLoader.get("SELECT_EXISTS_MARK_TYPE");
+        this.selectById = QueryLoader.get("SELECT_MARK_TYPE_BY_ID");
+    }
 
     @Override
     public MarkType getAndSaveMarkTypeByName(String name) {
@@ -46,7 +37,7 @@ public class MarkTypeDaoImpl implements IMarkTypeDao {
     public MarkType findMarkTypeByName (String name) {
 
         try (Connection connection = ConnectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(SELECT_VALUES)) {
+             PreparedStatement ps = connection.prepareStatement(selectValues)) {
 
             ps.setString(1, name);
 
@@ -64,7 +55,7 @@ public class MarkTypeDaoImpl implements IMarkTypeDao {
     public MarkType findMarkTypeById (Integer id) {
 
         try (Connection connection = ConnectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(SELECT_BY_ID)) {
+             PreparedStatement ps = connection.prepareStatement(selectById)) {
 
             ps.setObject(1, id);
 
@@ -89,7 +80,7 @@ public class MarkTypeDaoImpl implements IMarkTypeDao {
         }
 
         try (Connection connection = ConnectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement ps = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, markType.getName());
             ps.executeUpdate();
@@ -116,7 +107,7 @@ public class MarkTypeDaoImpl implements IMarkTypeDao {
     public boolean existsMarkTypeWithName(String name) {
 
         try (Connection connection = ConnectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(SELECT_EXISTS)) {
+             PreparedStatement ps = connection.prepareStatement(selectExists)) {
 
             ps.setString(1, name);
 

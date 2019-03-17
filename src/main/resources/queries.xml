@@ -1,8 +1,53 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-    <entry key="SELECT_SINCE">
+
+    <entry key="INSERT_MARK">
+        INSERT INTO mark (when_happened, marked_date, marked_type_id)
+        VALUES (?,?,?);
+    </entry>
+
+    <entry key="SELECT_MARK_WITH_LIMIT">
         SELECT id, when_happened, marked_date, marked_type_id
         FROM mark
-        WHERE when_happened > ?
+        ORDER BY when_happened DESC
+        LIMIT ?;
     </entry>
+
+    <entry key="SELECT_MARK_SINCE">
+        SELECT id, when_happened, marked_date, marked_type_id
+        FROM mark
+        WHERE when_happened > ?;
+    </entry>
+
+    <entry key="SELECT_MARK_BETWEEN">
+        SELECT id, when_happened, marked_date, marked_type_id
+        FROM mark
+        WHERE when_happened BETWEEN ? AND ?;
+    </entry>
+
+    <entry key="INSERT_MARK_TYPE">
+        INSERT INTO mark_type (name)
+        VALUES (?);
+    </entry>
+
+    <entry key="SELECT_EXISTS_MARK_TYPE">
+        SELECT count(*)
+        AS total
+        FROM mark_type
+        WHERE name = ?;
+    </entry>
+
+    <entry key="SELECT_MARK_TYPE_BY_NAME">
+        SELECT id, name
+        FROM mark_type
+        WHERE name = ?;
+    </entry>
+
+
+    <entry key="SELECT_MARK_TYPE_BY_ID">
+        SELECT id, name
+        FROM mark_type
+        WHERE id = ?
+    </entry>
+
 </properties>

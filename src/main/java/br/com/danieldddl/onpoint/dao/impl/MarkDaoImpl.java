@@ -1,52 +1,43 @@
 package br.com.danieldddl.onpoint.dao.impl;
 
 import br.com.danieldddl.onpoint.config.ConnectionPool;
+import br.com.danieldddl.onpoint.config.QueryLoader;
 import br.com.danieldddl.onpoint.dao.api.IMarkDao;
 import br.com.danieldddl.onpoint.dao.api.IMarkTypeDao;
 import br.com.danieldddl.onpoint.model.Mark;
 import br.com.danieldddl.onpoint.model.MarkType;
-import com.google.inject.Inject;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
+import javax.inject.Inject;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class MarkDaoImpl implements IMarkDao {
-
-    private static final Logger LOGGER = LogManager.getLogger(MarkDaoImpl.class);
-
-    private static final String INSERT_QUERY = "INSERT INTO mark (when_happened, marked_date, marked_type_id) " +
-                                               "VALUES (?,?,?)";
-
-    private static final String SELECT_LIMIT = "SELECT id, when_happened, marked_date, marked_type_id " +
-                                               "FROM mark " +
-                                               "ORDER BY when_happened DESC " +
-                                               "LIMIT ?;";
-
-    private static final String SELECT_SINCE = "SELECT id, when_happened, marked_date, marked_type_id " +
-                                               "FROM mark " +
-                                               "WHERE when_happened > ?";
-
-    private static final String SELECT_BETWEEN = "SELECT id, when_happened, marked_date, marked_type_id " +
-                                                 "FROM mark " +
-                                                 "WHERE when_happened BETWEEN ? AND ?";
 
     private IMarkTypeDao markTypeDao;
 
+    private String insertQuery;
+    private String selectLimit;
+    private String selectSince;
+    private String selectBetween;
+
     @Inject
     public MarkDaoImpl (IMarkTypeDao markTypeDao) {
+
         this.markTypeDao = markTypeDao;
+
+        this.insertQuery = QueryLoader.get("INSERT_MARK");
+        this.selectLimit = QueryLoader.get("SELECT_MARK_WITH_LIMIT");
+        this.selectSince = QueryLoader.get("SELECT_MARK_SINCE");
+        this.selectBetween = QueryLoader.get("SELECT_MARK_BETWEEN");
     }
 
     @Override
     public Mark persist(Mark mark) {
 
         try (Connection connection = ConnectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(INSERT_QUERY,
+             PreparedStatement ps = connection.prepareStatement(insertQuery,
                                                                 Statement.RETURN_GENERATED_KEYS)) {
 
             //in case we are persisting a mark without a type
@@ -81,7 +72,7 @@ public class MarkDaoImpl implements IMarkDao {
     public List<Mark> listLastMarks (int amount) {
 
         try (Connection connection = ConnectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(SELECT_LIMIT)) {
+             PreparedStatement ps = connection.prepareStatement(selectLimit)) {
 
             //number of rows we are going to retrieve
             ps.setObject(1, amount);
@@ -99,7 +90,7 @@ public class MarkDaoImpl implements IMarkDao {
     public List<Mark> listSince(LocalDateTime sinceWhen) {
 
         try (Connection connection = ConnectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(SELECT_SINCE)) {
+             PreparedStatement ps = connection.prepareStatement(selectSince)) {
 
             //the date we are going to use as base
             ps.setObject(1, sinceWhen);
@@ -117,7 +108,7 @@ public class MarkDaoImpl implements IMarkDao {
     public List<Mark> listBetween (LocalDateTime lowerDate, LocalDateTime upperDate) {
 
         try (Connection connection = ConnectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(SELECT_BETWEEN)) {
+             PreparedStatement ps = connection.prepareStatement(selectBetween)) {
 
             ps.setObject(1, lowerDate);
             ps.setObject(2, upperDate);

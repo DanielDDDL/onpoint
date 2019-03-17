@@ -15,11 +15,10 @@ public class QueryLoader {
     private static Map<String,String> queries;
 
     static {
-        queries = new HashMap<>();
-        queries = setup();
+        queries = setupQueries();
     }
 
-    private static Map<String,String> setup () {
+    private static Map<String,String> setupQueries () {
 
         String filename = Settings.getProperty("queries.filename");
         InputStream inputStream = QueryLoader.class.getClassLoader().getResourceAsStream(filename);
@@ -54,7 +53,7 @@ public class QueryLoader {
     }
 
 
-    public static String getQuery (String queryName) {
+    public static String get (String queryName) {
 
         String queryFetched = queries.get(queryName);
         if (queryFetched == null){
