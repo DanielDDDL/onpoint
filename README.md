@@ -1,4 +1,4 @@
-#OnPoint
+# OnPoint
 CLI application to mark clocks in an out, and retrieve marked points.
 
 ### Usage
