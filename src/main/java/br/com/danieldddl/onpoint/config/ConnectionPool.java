@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Objects;
 
 public class ConnectionPool {
 
@@ -38,14 +39,9 @@ public class ConnectionPool {
         String password = Settings.getProperty("database.password");
 
         BasicDataSource ds = new BasicDataSource();
-        ds.setUrl(url);
-        ds.setUsername(username);
-        ds.setPassword(password);
-
-        //TODO read about the different types of transaction isolation levels
-        //TODO and set the most appropriated value in here
-//        ds.setDefaultTransactionIsolation(TRANSACTION_READ_COMMITTED);
-//        ds.setDefaultAutoCommit(false);
+        ds.setUrl(Objects.requireNonNull(url));
+        ds.setUsername(Objects.requireNonNull(username));
+        ds.setPassword(Objects.requireNonNull(password));
 
         return ds;
     }
