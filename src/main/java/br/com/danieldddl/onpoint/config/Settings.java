@@ -32,7 +32,7 @@ class Settings {
     private static Map setupProperties () {
 
         String filename = "config.properties";
-        InputStream inputStream = ConnectionPool.class.getClassLoader().getResourceAsStream(filename);
+        InputStream inputStream = Settings.class.getClassLoader().getResourceAsStream(filename);
 
         if (inputStream != null) {
 

@@ -36,12 +36,9 @@ public class QueryLoader {
             Map<String,String> loadedQueries = new HashMap<>();
 
             properties.forEach((propertyKey, propertyValue) -> {
+
                 String key = (String) propertyKey;
                 String value = (String) propertyValue;
-
-                //TODO evaluate if we are going to need to threat the output of this file first
-                //getting rid of the new line characters
-//                value = value.replaceAll("\n","");
 
                 loadedQueries.put(key, value);
             });
