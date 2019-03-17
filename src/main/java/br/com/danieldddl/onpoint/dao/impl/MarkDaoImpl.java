@@ -6,12 +6,14 @@ import br.com.danieldddl.onpoint.dao.api.IMarkDao;
 import br.com.danieldddl.onpoint.dao.api.IMarkTypeDao;
 import br.com.danieldddl.onpoint.model.Mark;
 import br.com.danieldddl.onpoint.model.MarkType;
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MarkDaoImpl implements IMarkDao {
 
@@ -34,7 +36,9 @@ public class MarkDaoImpl implements IMarkDao {
     }
 
     @Override
-    public Mark persist(Mark mark) {
+    public Mark persist(@NotNull Mark mark) {
+
+        Objects.requireNonNull(mark);
 
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(insertQuery,
@@ -71,6 +75,10 @@ public class MarkDaoImpl implements IMarkDao {
     @Override
     public List<Mark> listLastMarks (int amount) {
 
+        if (amount < 0) {
+            throw new IllegalArgumentException("When listing last marks, the amount should be positive");
+        }
+
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(selectLimit)) {
 
@@ -87,7 +95,9 @@ public class MarkDaoImpl implements IMarkDao {
     }
 
     @Override
-    public List<Mark> listSince(LocalDateTime sinceWhen) {
+    public List<Mark> listSince(@NotNull LocalDateTime sinceWhen) {
+
+        Objects.requireNonNull(sinceWhen);
 
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(selectSince)) {
@@ -105,7 +115,10 @@ public class MarkDaoImpl implements IMarkDao {
     }
 
     @Override
-    public List<Mark> listBetween (LocalDateTime lowerDate, LocalDateTime upperDate) {
+    public List<Mark> listBetween (@NotNull LocalDateTime lowerDate, @NotNull LocalDateTime upperDate) {
+
+        Objects.requireNonNull(lowerDate);
+        Objects.requireNonNull(upperDate);
 
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(selectBetween)) {

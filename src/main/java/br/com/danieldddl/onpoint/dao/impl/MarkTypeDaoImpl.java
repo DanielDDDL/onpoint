@@ -4,6 +4,7 @@ import br.com.danieldddl.onpoint.config.ConnectionPool;
 import br.com.danieldddl.onpoint.config.QueryLoader;
 import br.com.danieldddl.onpoint.dao.api.IMarkTypeDao;
 import br.com.danieldddl.onpoint.model.MarkType;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
 import java.util.Objects;
@@ -23,7 +24,9 @@ public class MarkTypeDaoImpl implements IMarkTypeDao {
     }
 
     @Override
-    public MarkType getAndSaveMarkTypeByName(String name) {
+    public MarkType getAndSaveMarkTypeByName(@NotNull String name) {
+
+        Objects.requireNonNull(name);
 
         MarkType markType = findMarkTypeByName(name);
         if (markType == null) {
@@ -34,7 +37,9 @@ public class MarkTypeDaoImpl implements IMarkTypeDao {
     }
 
     @Override
-    public MarkType findMarkTypeByName (String name) {
+    public MarkType findMarkTypeByName (@NotNull String name) {
+
+        Objects.requireNonNull(name);
 
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(selectValues)) {
@@ -52,7 +57,9 @@ public class MarkTypeDaoImpl implements IMarkTypeDao {
     }
 
     @Override
-    public MarkType findMarkTypeById (Integer id) {
+    public MarkType findMarkTypeById (@NotNull Integer id) {
+
+        Objects.requireNonNull(id);
 
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(selectById)) {
@@ -70,7 +77,7 @@ public class MarkTypeDaoImpl implements IMarkTypeDao {
     }
 
     @Override
-    public MarkType insert (MarkType markType) {
+    public MarkType insert (@NotNull MarkType markType) {
 
         Objects.requireNonNull(markType);
         Objects.requireNonNull(markType.getName(), "Trying to insert a MarkType without a name");
@@ -104,7 +111,9 @@ public class MarkTypeDaoImpl implements IMarkTypeDao {
     }
 
     @Override
-    public boolean existsMarkTypeWithName(String name) {
+    public boolean existsMarkTypeWithName(@NotNull String name) {
+
+        Objects.requireNonNull(name);
 
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(selectExists)) {

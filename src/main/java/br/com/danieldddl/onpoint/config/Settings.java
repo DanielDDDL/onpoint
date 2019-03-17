@@ -1,10 +1,10 @@
 package br.com.danieldddl.onpoint.config;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Responsible for loading configuration file
@@ -18,10 +18,16 @@ class Settings {
         fileProperties = setupProperties();
     }
 
-    static String getProperty (String propertyName) {
+    static String getProperty (@NotNull String propertyName) {
+
+        Objects.requireNonNull(propertyName);
+
         //we can make this casting
         //as we are only retrieving strings from the properties file
-        return (String) fileProperties.get(propertyName);
+        Optional<String> wantedProperty = Optional.ofNullable((String) fileProperties.get(propertyName));
+        return wantedProperty
+                .orElseThrow(
+                        () -> new IllegalArgumentException("Could not find wanted property: " + propertyName));
     }
 
     /**

@@ -1,10 +1,10 @@
 package br.com.danieldddl.onpoint.config;
 
+import com.sun.istack.internal.NotNull;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Responsible for reaching out to the project files
@@ -50,14 +50,14 @@ public class QueryLoader {
     }
 
 
-    public static String get (String queryName) {
+    public static String get (@NotNull String queryName) {
 
-        String queryFetched = queries.get(queryName);
-        if (queryFetched == null){
-            throw new IllegalArgumentException("Query not defined for name " + queryName);
-        }
+        Objects.requireNonNull(queryName);
 
-        return queryFetched;
+        Optional<String> queryFetched = Optional.ofNullable(queries.get(queryName));
+        return queryFetched
+                .orElseThrow(
+                        () -> new IllegalArgumentException("Query not defined for name " + queryName));
     }
 
 }
