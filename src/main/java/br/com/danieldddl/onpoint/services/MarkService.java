@@ -4,9 +4,9 @@ import br.com.danieldddl.onpoint.dao.api.IMarkDao;
 import br.com.danieldddl.onpoint.dao.api.IMarkTypeDao;
 import br.com.danieldddl.onpoint.model.Mark;
 import br.com.danieldddl.onpoint.model.MarkType;
-import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;

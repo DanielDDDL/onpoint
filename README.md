@@ -5,7 +5,7 @@ CLI application to mark clocks in an out, and retrieve marked points.
 
 ```-a,--arrival <arg>```   Create a arrival mark with the specified date, if existing. If not, use current date.
 
-```-b,--between <arg>```   Get all points between two informed dates
+```-b,--between <arg>```   Get all points between two informed dates.
  
 ```-h,--help```            Print all information about commands you can use.
 
@@ -13,6 +13,6 @@ CLI application to mark clocks in an out, and retrieve marked points.
  
 ```-m,--mark <arg>```      Create a simple mark without a MarkType.
  
-```-p,--point <arg>```     Get the last n points
+```-p,--point <arg>```     Get the last n points.
 
 ```-s,--since <arg>```     Get all points since informed date.

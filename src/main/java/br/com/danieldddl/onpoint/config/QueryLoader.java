@@ -1,7 +1,6 @@
 package br.com.danieldddl.onpoint.config;
 
-import com.sun.istack.internal.NotNull;
-
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;

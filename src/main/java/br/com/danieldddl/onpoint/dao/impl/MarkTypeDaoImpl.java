@@ -4,8 +4,8 @@ import br.com.danieldddl.onpoint.config.ConnectionPool;
 import br.com.danieldddl.onpoint.config.QueryLoader;
 import br.com.danieldddl.onpoint.dao.api.IMarkTypeDao;
 import br.com.danieldddl.onpoint.model.MarkType;
-import org.jetbrains.annotations.NotNull;
 
+import javax.validation.constraints.NotNull;
 import java.sql.*;
 import java.util.Objects;
 

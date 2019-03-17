@@ -27,6 +27,7 @@
         <h2.version>1.4.197</h2.version>
         <guice.version>4.2.2</guice.version>
         <commonscli.version>1.4</commonscli.version>
+        <javaxvalidation.version>2.0.1.Final</javaxvalidation.version>
     </properties>
 
     <dependencies>
@@ -69,6 +70,11 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>${h2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>${javaxvalidation.version}</version>
         </dependency>
 
     </dependencies>

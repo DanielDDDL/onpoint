@@ -1,7 +1,8 @@
 package br.com.danieldddl.onpoint.dao.api;
 
 import br.com.danieldddl.onpoint.model.MarkType;
-import org.jetbrains.annotations.NotNull;
+
+import javax.validation.constraints.NotNull;
 
 public interface IMarkTypeDao {
 
