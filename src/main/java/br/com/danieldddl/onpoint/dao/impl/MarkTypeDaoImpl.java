@@ -19,7 +19,7 @@ public class MarkTypeDaoImpl implements IMarkTypeDao {
     public MarkTypeDaoImpl () {
         this.insertQuery = QueryLoader.get("INSERT_MARK_TYPE");
         this.selectExists = QueryLoader.get("SELECT_EXISTS_MARK_TYPE");
-        this.selectValues = QueryLoader.get("SELECT_EXISTS_MARK_TYPE");
+        this.selectValues = QueryLoader.get("SELECT_MARK_TYPE_BY_NAME");
         this.selectById = QueryLoader.get("SELECT_MARK_TYPE_BY_ID");
     }
 

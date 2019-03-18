@@ -6,7 +6,12 @@ import br.com.danieldddl.onpoint.services.MarkService;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import jdk.nashorn.internal.runtime.ParserException;
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.HelpFormatter;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
