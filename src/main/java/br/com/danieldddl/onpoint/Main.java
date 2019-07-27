@@ -2,7 +2,7 @@ package br.com.danieldddl.onpoint;
 
 import br.com.danieldddl.onpoint.config.MarkServiceModule;
 import br.com.danieldddl.onpoint.model.Mark;
-import br.com.danieldddl.onpoint.services.MarkService;
+import br.com.danieldddl.onpoint.services.api.MarkService;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.apache.commons.cli.CommandLine;

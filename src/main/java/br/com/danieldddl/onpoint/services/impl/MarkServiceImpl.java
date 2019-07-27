@@ -1,9 +1,10 @@
-package br.com.danieldddl.onpoint.services;
+package br.com.danieldddl.onpoint.services.impl;
 
 import br.com.danieldddl.onpoint.dao.api.MarkDao;
 import br.com.danieldddl.onpoint.dao.api.TypeDao;
 import br.com.danieldddl.onpoint.model.Mark;
 import br.com.danieldddl.onpoint.model.Type;
+import br.com.danieldddl.onpoint.services.api.MarkService;
 
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
@@ -12,7 +13,7 @@ import java.util.List;
 
 import static java.util.Objects.*;
 
-public class MarkService {
+public class MarkServiceImpl implements MarkService {
 
     private static final String ARRIVAL_MARK_NAME = "Arrival";
     private static final String LEAVING_MARK_NAME = "Leaving";
@@ -21,19 +22,21 @@ public class MarkService {
     private TypeDao typeDao;
 
     @Inject
-    public MarkService(MarkDao markDao, TypeDao typeDao) {
+    public MarkServiceImpl(MarkDao markDao, TypeDao typeDao) {
         this.markDao = markDao;
         this.typeDao = typeDao;
     }
 
-    public Mark markArrival () {
+    @Override
+    public Mark markArrival() {
         Type arrivalType = typeDao.getOrElsePersistWithName(ARRIVAL_MARK_NAME);
         Mark arrivalMark = new Mark(arrivalType);
 
         return markDao.persist(arrivalMark);
     }
 
-    public Mark markArrival (@NotNull LocalDateTime whenArrived) {
+    @Override
+    public Mark markArrival(@NotNull LocalDateTime whenArrived) {
 
         requireNonNull(whenArrived);
 
@@ -43,14 +46,16 @@ public class MarkService {
         return markDao.persist(arrivalMark);
     }
 
-    public Mark markLeaving () {
+    @Override
+    public Mark markLeaving() {
         Type leavingType = typeDao.getOrElsePersistWithName(LEAVING_MARK_NAME);
         Mark leavingMark = new Mark(leavingType);
 
         return markDao.persist(leavingMark);
     }
 
-    public Mark markLeaving (@NotNull LocalDateTime whenLeft) {
+    @Override
+    public Mark markLeaving(@NotNull LocalDateTime whenLeft) {
 
         requireNonNull(whenLeft);
 
@@ -60,12 +65,14 @@ public class MarkService {
         return markDao.persist(leavingMark);
     }
 
-    public Mark simpleMark () {
+    @Override
+    public Mark simpleMark() {
         Mark simpleMark = new Mark();
         return markDao.persist(simpleMark);
     }
 
-    public Mark simpleMark (@NotNull LocalDateTime when) {
+    @Override
+    public Mark simpleMark(@NotNull LocalDateTime when) {
 
         requireNonNull(when);
 
@@ -73,8 +80,9 @@ public class MarkService {
         return markDao.persist(simpleMark);
     }
 
-    public List<Mark> listBetween (@NotNull LocalDateTime firstDate,
-                                   @NotNull LocalDateTime secondDate) {
+    @Override
+    public List<Mark> listBetween(@NotNull LocalDateTime firstDate,
+                                  @NotNull LocalDateTime secondDate) {
 
         requireNonNull(firstDate);
         requireNonNull(secondDate);
@@ -85,12 +93,14 @@ public class MarkService {
                 markDao.listBetween(secondDate, firstDate);
     }
 
-    public List<Mark> listSince (@NotNull LocalDateTime startingDate) {
+    @Override
+    public List<Mark> listSince(@NotNull LocalDateTime startingDate) {
         requireNonNull(startingDate);
         return markDao.listSince(startingDate);
     }
 
-    public List<Mark> list (@NotNull Integer numberOfMarks) {
+    @Override
+    public List<Mark> list(@NotNull Integer numberOfMarks) {
         requireNonNull(numberOfMarks);
         return markDao.listLast(numberOfMarks);
     }
