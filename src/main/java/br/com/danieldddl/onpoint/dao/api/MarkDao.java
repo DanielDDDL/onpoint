@@ -6,10 +6,10 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface IMarkDao {
+public interface MarkDao {
 
     Mark persist(@NotNull Mark mark);
-    List<Mark> listLastMarks(int amount);
+    List<Mark> listLast(int amount);
     List<Mark> listSince (@NotNull LocalDateTime sinceWhen);
     List<Mark> listBetween(@NotNull LocalDateTime lowerDate, @NotNull LocalDateTime upperDate);
 

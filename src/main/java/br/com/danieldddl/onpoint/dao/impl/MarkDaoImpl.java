@@ -2,8 +2,8 @@ package br.com.danieldddl.onpoint.dao.impl;
 
 import br.com.danieldddl.onpoint.config.ConnectionPool;
 import br.com.danieldddl.onpoint.config.QueryLoader;
-import br.com.danieldddl.onpoint.dao.api.IMarkDao;
-import br.com.danieldddl.onpoint.dao.api.IMarkTypeDao;
+import br.com.danieldddl.onpoint.dao.api.MarkDao;
+import br.com.danieldddl.onpoint.dao.api.MarkTypeDao;
 import br.com.danieldddl.onpoint.model.Mark;
 import br.com.danieldddl.onpoint.model.MarkType;
 
@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class MarkDaoImpl implements IMarkDao {
+public class MarkDaoImpl implements MarkDao {
 
-    private IMarkTypeDao markTypeDao;
+    private MarkTypeDao markTypeDao;
 
     private String insertQuery;
     private String selectLimit;
@@ -25,7 +25,7 @@ public class MarkDaoImpl implements IMarkDao {
     private String selectBetween;
 
     @Inject
-    public MarkDaoImpl (IMarkTypeDao markTypeDao) {
+    public MarkDaoImpl (MarkTypeDao markTypeDao) {
 
         this.markTypeDao = markTypeDao;
 
@@ -73,7 +73,7 @@ public class MarkDaoImpl implements IMarkDao {
     }
 
     @Override
-    public List<Mark> listLastMarks (int amount) {
+    public List<Mark> listLast(int amount) {
 
         if (amount < 0) {
             throw new IllegalArgumentException("When listing last marks, the amount should be positive");
@@ -147,7 +147,7 @@ public class MarkDaoImpl implements IMarkDao {
 
         //checking if markTypeId is null and setting markType attribute properly
         Integer markedTypeId = rs.getInt("marked_type_id");
-        MarkType markType = rs.wasNull() ? null : markTypeDao.findMarkTypeById(markedTypeId);
+        MarkType markType = rs.wasNull() ? null : markTypeDao.find(markedTypeId);
 
         return new Mark(id, when, markedDate, markType);
     }

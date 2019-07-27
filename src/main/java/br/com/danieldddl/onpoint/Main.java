@@ -5,7 +5,6 @@ import br.com.danieldddl.onpoint.model.Mark;
 import br.com.danieldddl.onpoint.services.MarkService;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import jdk.nashorn.internal.runtime.ParserException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
@@ -181,7 +180,7 @@ public class Main {
     }
 
 
-    private static LocalDateTime extractDateFromString (String raw) {
+    private static LocalDateTime extractDateFromString (String raw) throws ParseException {
 
         try {
 
@@ -191,7 +190,7 @@ public class Main {
                     .toLocalDateTime();
 
         } catch (java.text.ParseException e) {
-            throw new ParserException("Error while converting informed date. Please, use format yyyyMMdd");
+            throw new ParseException("Error while converting informed date. Please, use format yyyyMMdd");
         }
 
     }

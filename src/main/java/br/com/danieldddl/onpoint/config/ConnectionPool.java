@@ -27,8 +27,7 @@ public class ConnectionPool {
         try {
             return dataSource.getConnection();
         } catch (SQLException e) {
-            LOGGER.error("Error while getting connection from datasource");
-            throw new IllegalStateException(e);
+            throw new IllegalStateException("Error while getting connection from datasource: ", e);
         }
     }
 
@@ -42,6 +41,8 @@ public class ConnectionPool {
         ds.setUrl(Objects.requireNonNull(url));
         ds.setUsername(Objects.requireNonNull(username));
         ds.setPassword(Objects.requireNonNull(password));
+
+        LOGGER.debug("Setting up datasource using url {} and username {}", url, username);
 
         return ds;
     }

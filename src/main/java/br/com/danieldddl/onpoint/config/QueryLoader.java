@@ -55,8 +55,7 @@ public class QueryLoader {
 
         Optional<String> queryFetched = Optional.ofNullable(queries.get(queryName));
         return queryFetched
-                .orElseThrow(
-                        () -> new IllegalArgumentException("Query not defined for name " + queryName));
+                .orElseThrow(() -> new IllegalArgumentException("Query not defined for name " + queryName));
     }
 
 }

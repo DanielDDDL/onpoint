@@ -2,14 +2,14 @@ package br.com.danieldddl.onpoint.dao.impl;
 
 import br.com.danieldddl.onpoint.config.ConnectionPool;
 import br.com.danieldddl.onpoint.config.QueryLoader;
-import br.com.danieldddl.onpoint.dao.api.IMarkTypeDao;
+import br.com.danieldddl.onpoint.dao.api.MarkTypeDao;
 import br.com.danieldddl.onpoint.model.MarkType;
 
 import javax.validation.constraints.NotNull;
 import java.sql.*;
 import java.util.Objects;
 
-public class MarkTypeDaoImpl implements IMarkTypeDao {
+public class MarkTypeDaoImpl implements MarkTypeDao {
 
     private String insertQuery;
     private String selectExists;
@@ -24,11 +24,11 @@ public class MarkTypeDaoImpl implements IMarkTypeDao {
     }
 
     @Override
-    public MarkType getAndSaveMarkTypeByName(@NotNull String name) {
+    public MarkType getOrElsePersistByName(@NotNull String name) {
 
         Objects.requireNonNull(name);
 
-        MarkType markType = findMarkTypeByName(name);
+        MarkType markType = find(name);
         if (markType == null) {
             markType = insert(new MarkType(name));
         }
@@ -37,7 +37,7 @@ public class MarkTypeDaoImpl implements IMarkTypeDao {
     }
 
     @Override
-    public MarkType findMarkTypeByName (@NotNull String name) {
+    public MarkType find(@NotNull String name) {
 
         Objects.requireNonNull(name);
 
@@ -57,7 +57,7 @@ public class MarkTypeDaoImpl implements IMarkTypeDao {
     }
 
     @Override
-    public MarkType findMarkTypeById (@NotNull Integer id) {
+    public MarkType find(@NotNull Integer id) {
 
         Objects.requireNonNull(id);
 
@@ -82,7 +82,7 @@ public class MarkTypeDaoImpl implements IMarkTypeDao {
         Objects.requireNonNull(markType);
         Objects.requireNonNull(markType.getName(), "Trying to insert a MarkType without a name");
 
-        if (existsMarkTypeWithName(markType.getName())) {
+        if (existsWithName(markType.getName())) {
             throw new IllegalStateException("Trying to insert a MarkType already persisted");
         }
 
@@ -111,7 +111,7 @@ public class MarkTypeDaoImpl implements IMarkTypeDao {
     }
 
     @Override
-    public boolean existsMarkTypeWithName(@NotNull String name) {
+    public boolean existsWithName(@NotNull String name) {
 
         Objects.requireNonNull(name);
 
