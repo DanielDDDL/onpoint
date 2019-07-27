@@ -7,7 +7,7 @@ public class Mark {
     private Integer id;
     private LocalDateTime when;
     private LocalDateTime markedDate;
-    private MarkType markType;
+    private Type type;
 
     public Mark () {
 
@@ -23,33 +23,27 @@ public class Mark {
         this.markedDate = LocalDateTime.now();
     }
 
-    public Mark(Integer id, LocalDateTime when, LocalDateTime markedDate, MarkType markType) {
+    public Mark(Integer id, LocalDateTime when, LocalDateTime markedDate, Type type) {
         this.id = id;
         this.when = when;
         this.markedDate = markedDate;
-        this.markType = markType;
+        this.type = type;
     }
 
-    public Mark(LocalDateTime when, LocalDateTime markedDate, MarkType markType) {
-        this.when = when;
-        this.markedDate = markedDate;
-        this.markType = markType;
-    }
-
-    public Mark (LocalDateTime when, MarkType markType) {
+    public Mark (LocalDateTime when, Type type) {
         this.when = when;
         this.markedDate = LocalDateTime.now();
-        this.markType = markType;
+        this.type = type;
     }
 
-    public Mark (MarkType markType) {
+    public Mark (Type type) {
 
         //to ensure the same date when saving
         LocalDateTime now = LocalDateTime.now();
 
         this.when = now;
         this.markedDate = now;
-        this.markType = markType;
+        this.type = type;
     }
 
     //region getters and setters
@@ -77,12 +71,12 @@ public class Mark {
         this.markedDate = markedDate;
     }
 
-    public MarkType getMarkType() {
-        return markType;
+    public Type getType() {
+        return type;
     }
 
-    public void setMarkType(MarkType markType) {
-        this.markType = markType;
+    public void setType(Type type) {
+        this.type = type;
     }
     //endregion
 
@@ -92,7 +86,7 @@ public class Mark {
                 "id=" + id +
                 ", when=" + when +
                 ", markedDate=" + markedDate +
-                ", markType=" + markType +
+                ", type=" + type +
                 '}';
     }
 }

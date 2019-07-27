@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
+import static java.util.Objects.*;
+
 /**
  * Responsible for reaching out to the project files
  * and get the database queries
@@ -51,7 +53,7 @@ public class QueryLoader {
 
     public static String get (@NotNull String queryName) {
 
-        Objects.requireNonNull(queryName);
+        requireNonNull(queryName);
 
         Optional<String> queryFetched = Optional.ofNullable(queries.get(queryName));
         return queryFetched

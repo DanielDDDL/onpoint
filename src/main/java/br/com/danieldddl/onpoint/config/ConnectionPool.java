@@ -7,7 +7,8 @@ import org.apache.logging.log4j.Logger;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Objects;
+
+import static java.util.Objects.*;
 
 public class ConnectionPool {
 
@@ -38,9 +39,9 @@ public class ConnectionPool {
         String password = Settings.getProperty("database.password");
 
         BasicDataSource ds = new BasicDataSource();
-        ds.setUrl(Objects.requireNonNull(url));
-        ds.setUsername(Objects.requireNonNull(username));
-        ds.setPassword(Objects.requireNonNull(password));
+        ds.setUrl(requireNonNull(url));
+        ds.setUsername(requireNonNull(username));
+        ds.setPassword(requireNonNull(password));
 
         LOGGER.debug("Setting up datasource using url {} and username {}", url, username);
 

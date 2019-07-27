@@ -66,7 +66,7 @@ public class Main {
 
         Option mark = Option.builder("m")
                 .longOpt(OPTION_MARK)
-                .desc("Create a simple mark without a MarkType")
+                .desc("Create a simple mark without a Type")
                 .required(false)
                 .numberOfArgs(1)
                 .optionalArg(true)
@@ -175,7 +175,7 @@ public class Main {
 
 
         } catch (ParseException e) {
-            System.err.println(e.getMessage());
+            printerr(e.getMessage());
         }
     }
 
@@ -205,13 +205,27 @@ public class Main {
 
         for (Mark mark : marks)  {
 
-            System.out.printf("mark %d %n", mark.getId());
-            System.out.printf("mark of type %s %n",
-                    (mark.getMarkType() == null ? "undefined" : mark.getMarkType().getName()));
-            System.out.printf("when marked %s%n", extractStringFromDate(mark.getWhen()));
-            System.out.printf("marked date %s%n%n", extractStringFromDate(mark.getMarkedDate()));
+            printf("mark %d %n", mark.getId());
+            printf("mark of type %s %n",
+                    (mark.getType() == null ? "undefined" : mark.getType().getName()));
+            printf("when marked %s%n", extractStringFromDate(mark.getWhen()));
+            printf("marked date %s%n%n", extractStringFromDate(mark.getMarkedDate()));
 
         }
+    }
+
+    /**
+     * Utils for printing formatted text
+     * */
+    private static void printf(String format, Object... objects) {
+        System.out.printf(format, objects);
+    }
+
+    /**
+     * Utils for printing error
+     * */
+    private static void printerr (String message) {
+        System.err.print(message);
     }
 
 }

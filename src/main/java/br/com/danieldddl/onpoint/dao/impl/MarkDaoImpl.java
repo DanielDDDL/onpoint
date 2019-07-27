@@ -3,9 +3,9 @@ package br.com.danieldddl.onpoint.dao.impl;
 import br.com.danieldddl.onpoint.config.ConnectionPool;
 import br.com.danieldddl.onpoint.config.QueryLoader;
 import br.com.danieldddl.onpoint.dao.api.MarkDao;
-import br.com.danieldddl.onpoint.dao.api.MarkTypeDao;
+import br.com.danieldddl.onpoint.dao.api.TypeDao;
 import br.com.danieldddl.onpoint.model.Mark;
-import br.com.danieldddl.onpoint.model.MarkType;
+import br.com.danieldddl.onpoint.model.Type;
 
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
@@ -13,11 +13,12 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
+import static java.util.Objects.*;
 
 public class MarkDaoImpl implements MarkDao {
 
-    private MarkTypeDao markTypeDao;
+    private TypeDao typeDao;
 
     private String insertQuery;
     private String selectLimit;
@@ -25,9 +26,9 @@ public class MarkDaoImpl implements MarkDao {
     private String selectBetween;
 
     @Inject
-    public MarkDaoImpl (MarkTypeDao markTypeDao) {
+    public MarkDaoImpl (TypeDao typeDao) {
 
-        this.markTypeDao = markTypeDao;
+        this.typeDao = typeDao;
 
         this.insertQuery = QueryLoader.get("INSERT_MARK");
         this.selectLimit = QueryLoader.get("SELECT_MARK_WITH_LIMIT");
@@ -38,14 +39,14 @@ public class MarkDaoImpl implements MarkDao {
     @Override
     public Mark persist(@NotNull Mark mark) {
 
-        Objects.requireNonNull(mark);
+        requireNonNull(mark);
 
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(insertQuery,
                                                                 Statement.RETURN_GENERATED_KEYS)) {
 
             //in case we are persisting a mark without a type
-            Integer markedTypeId = mark.getMarkType() == null ? null : mark.getMarkType().getId();
+            Integer markedTypeId = mark.getType() == null ? null : mark.getType().getId();
 
             ps.setObject(1, mark.getWhen());
             ps.setObject(2, mark.getMarkedDate());
@@ -97,7 +98,7 @@ public class MarkDaoImpl implements MarkDao {
     @Override
     public List<Mark> listSince(@NotNull LocalDateTime sinceWhen) {
 
-        Objects.requireNonNull(sinceWhen);
+        requireNonNull(sinceWhen);
 
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(selectSince)) {
@@ -117,8 +118,9 @@ public class MarkDaoImpl implements MarkDao {
     @Override
     public List<Mark> listBetween (@NotNull LocalDateTime lowerDate, @NotNull LocalDateTime upperDate) {
 
-        Objects.requireNonNull(lowerDate);
-        Objects.requireNonNull(upperDate);
+        requireNonNull(lowerDate);
+        requireNonNull(upperDate);
+        assert lowerDate.isBefore(upperDate);
 
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(selectBetween)) {
@@ -145,11 +147,11 @@ public class MarkDaoImpl implements MarkDao {
         LocalDateTime when = rs.getTimestamp("when_happened").toLocalDateTime();
         LocalDateTime markedDate = rs.getTimestamp("marked_date").toLocalDateTime();
 
-        //checking if markTypeId is null and setting markType attribute properly
+        //checking if markTypeId is null and setting type attribute properly
         Integer markedTypeId = rs.getInt("marked_type_id");
-        MarkType markType = rs.wasNull() ? null : markTypeDao.find(markedTypeId);
+        Type type = rs.wasNull() ? null : typeDao.find(markedTypeId);
 
-        return new Mark(id, when, markedDate, markType);
+        return new Mark(id, when, markedDate, type);
     }
 
     /**

@@ -2,21 +2,22 @@ package br.com.danieldddl.onpoint.dao.impl;
 
 import br.com.danieldddl.onpoint.config.ConnectionPool;
 import br.com.danieldddl.onpoint.config.QueryLoader;
-import br.com.danieldddl.onpoint.dao.api.MarkTypeDao;
-import br.com.danieldddl.onpoint.model.MarkType;
+import br.com.danieldddl.onpoint.dao.api.TypeDao;
+import br.com.danieldddl.onpoint.model.Type;
 
 import javax.validation.constraints.NotNull;
 import java.sql.*;
-import java.util.Objects;
 
-public class MarkTypeDaoImpl implements MarkTypeDao {
+import static java.util.Objects.*;
+
+public class TypeDaoImpl implements TypeDao {
 
     private String insertQuery;
     private String selectExists;
     private String selectValues;
     private String selectById;
 
-    public MarkTypeDaoImpl () {
+    public TypeDaoImpl() {
         this.insertQuery = QueryLoader.get("INSERT_MARK_TYPE");
         this.selectExists = QueryLoader.get("SELECT_EXISTS_MARK_TYPE");
         this.selectValues = QueryLoader.get("SELECT_MARK_TYPE_BY_NAME");
@@ -24,22 +25,22 @@ public class MarkTypeDaoImpl implements MarkTypeDao {
     }
 
     @Override
-    public MarkType getOrElsePersistByName(@NotNull String name) {
+    public Type getOrElsePersistWithName(@NotNull String name) {
 
-        Objects.requireNonNull(name);
+        requireNonNull(name);
 
-        MarkType markType = find(name);
-        if (markType == null) {
-            markType = insert(new MarkType(name));
+        Type type = find(name);
+        if (type == null) {
+            type = insert(new Type(name));
         }
 
-        return markType;
+        return type;
     }
 
     @Override
-    public MarkType find(@NotNull String name) {
+    public Type find(@NotNull String name) {
 
-        Objects.requireNonNull(name);
+        requireNonNull(name);
 
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(selectValues)) {
@@ -51,15 +52,15 @@ public class MarkTypeDaoImpl implements MarkTypeDao {
             }
 
         } catch (SQLException e) {
-            throw new IllegalStateException("Error while retrieving MarkType by its name", e);
+            throw new IllegalStateException("Error while retrieving Type by its name", e);
         }
 
     }
 
     @Override
-    public MarkType find(@NotNull Integer id) {
+    public Type find(@NotNull Integer id) {
 
-        Objects.requireNonNull(id);
+        requireNonNull(id);
 
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(selectById)) {
@@ -71,49 +72,49 @@ public class MarkTypeDaoImpl implements MarkTypeDao {
             }
 
         } catch (SQLException e) {
-            throw new IllegalStateException("Error while retrieving MarkType by its name", e);
+            throw new IllegalStateException("Error while retrieving Type by its name", e);
         }
 
     }
 
     @Override
-    public MarkType insert (@NotNull MarkType markType) {
+    public Type insert (@NotNull Type type) {
 
-        Objects.requireNonNull(markType);
-        Objects.requireNonNull(markType.getName(), "Trying to insert a MarkType without a name");
+        requireNonNull(type);
+        requireNonNull(type.getName(), "Trying to insert a Type without a name");
 
-        if (existsWithName(markType.getName())) {
-            throw new IllegalStateException("Trying to insert a MarkType already persisted");
+        if (exists(type.getName())) {
+            throw new IllegalStateException("Trying to insert a Type already persisted");
         }
 
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
 
-            ps.setString(1, markType.getName());
+            ps.setString(1, type.getName());
             ps.executeUpdate();
 
             try (ResultSet resultingKeys = ps.getGeneratedKeys()) {
 
                 if (resultingKeys.next()) {
                     Integer id = resultingKeys.getInt(1);
-                    markType.setId(id);
+                    type.setId(id);
 
-                    return markType;
+                    return type;
                 } else {
                     //this means that nothing was inserted
-                    throw new IllegalStateException("Error while getting generated key from persisted new MarkType");
+                    throw new IllegalStateException("Error while getting generated key from persisted new Type");
                 }
             }
 
         } catch (SQLException e) {
-            throw new IllegalStateException("Error while persisting new MarkType", e);
+            throw new IllegalStateException("Error while persisting new Type", e);
         }
     }
 
     @Override
-    public boolean existsWithName(@NotNull String name) {
+    public boolean exists(@NotNull String name) {
 
-        Objects.requireNonNull(name);
+        requireNonNull(name);
 
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(selectExists)) {
@@ -130,7 +131,7 @@ public class MarkTypeDaoImpl implements MarkTypeDao {
             }
 
         } catch (SQLException e) {
-            throw new IllegalStateException("Error while checking if MarkType is unique", e);
+            throw new IllegalStateException("Error while checking if Type is unique", e);
         }
     }
 
@@ -141,14 +142,14 @@ public class MarkTypeDaoImpl implements MarkTypeDao {
      *
      * This does not close the ResultSet passed as parameter.
      * */
-    private MarkType extractMarkTypeFromResultSet (ResultSet rs) throws SQLException {
+    private Type extractMarkTypeFromResultSet (ResultSet rs) throws SQLException {
 
 
         if (rs.next()) {
             Integer fetchedId = rs.getInt("id");
             String fetchedName = rs.getString("name");
 
-            return new MarkType(fetchedId, fetchedName);
+            return new Type(fetchedId, fetchedName);
         }
 
         return null;

@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
+import static java.util.Objects.*;
+
 /**
  * Responsible for loading configuration file
  * and providing an interface for its values
@@ -19,7 +21,7 @@ class Settings {
 
     static String getProperty (@NotNull String propertyName) {
 
-        Objects.requireNonNull(propertyName);
+        requireNonNull(propertyName);
 
         //we can make this casting
         //as we are only retrieving strings from the properties file

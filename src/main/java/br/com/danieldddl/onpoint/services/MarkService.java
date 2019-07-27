@@ -1,15 +1,16 @@
 package br.com.danieldddl.onpoint.services;
 
 import br.com.danieldddl.onpoint.dao.api.MarkDao;
-import br.com.danieldddl.onpoint.dao.api.MarkTypeDao;
+import br.com.danieldddl.onpoint.dao.api.TypeDao;
 import br.com.danieldddl.onpoint.model.Mark;
-import br.com.danieldddl.onpoint.model.MarkType;
+import br.com.danieldddl.onpoint.model.Type;
 
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
+
+import static java.util.Objects.*;
 
 public class MarkService {
 
@@ -17,16 +18,16 @@ public class MarkService {
     private static final String LEAVING_MARK_NAME = "Leaving";
 
     private MarkDao markDao;
-    private MarkTypeDao markTypeDao;
+    private TypeDao typeDao;
 
     @Inject
-    public MarkService (MarkDao markDao, MarkTypeDao markTypeDao) {
+    public MarkService(MarkDao markDao, TypeDao typeDao) {
         this.markDao = markDao;
-        this.markTypeDao = markTypeDao;
+        this.typeDao = typeDao;
     }
 
     public Mark markArrival () {
-        MarkType arrivalType = markTypeDao.getOrElsePersistByName(ARRIVAL_MARK_NAME);
+        Type arrivalType = typeDao.getOrElsePersistWithName(ARRIVAL_MARK_NAME);
         Mark arrivalMark = new Mark(arrivalType);
 
         return markDao.persist(arrivalMark);
@@ -34,16 +35,16 @@ public class MarkService {
 
     public Mark markArrival (@NotNull LocalDateTime whenArrived) {
 
-        Objects.requireNonNull(whenArrived);
+        requireNonNull(whenArrived);
 
-        MarkType arrivalType = markTypeDao.getOrElsePersistByName(ARRIVAL_MARK_NAME);
+        Type arrivalType = typeDao.getOrElsePersistWithName(ARRIVAL_MARK_NAME);
         Mark arrivalMark = new Mark(whenArrived, arrivalType);
 
         return markDao.persist(arrivalMark);
     }
 
     public Mark markLeaving () {
-        MarkType leavingType = markTypeDao.getOrElsePersistByName(LEAVING_MARK_NAME);
+        Type leavingType = typeDao.getOrElsePersistWithName(LEAVING_MARK_NAME);
         Mark leavingMark = new Mark(leavingType);
 
         return markDao.persist(leavingMark);
@@ -51,9 +52,9 @@ public class MarkService {
 
     public Mark markLeaving (@NotNull LocalDateTime whenLeft) {
 
-        Objects.requireNonNull(whenLeft);
+        requireNonNull(whenLeft);
 
-        MarkType leavingType = markTypeDao.getOrElsePersistByName(LEAVING_MARK_NAME);
+        Type leavingType = typeDao.getOrElsePersistWithName(LEAVING_MARK_NAME);
         Mark leavingMark = new Mark(whenLeft, leavingType);
 
         return markDao.persist(leavingMark);
@@ -66,7 +67,7 @@ public class MarkService {
 
     public Mark simpleMark (@NotNull LocalDateTime when) {
 
-        Objects.requireNonNull(when);
+        requireNonNull(when);
 
         Mark simpleMark = new Mark(when);
         return markDao.persist(simpleMark);
@@ -75,8 +76,8 @@ public class MarkService {
     public List<Mark> listBetween (@NotNull LocalDateTime firstDate,
                                    @NotNull LocalDateTime secondDate) {
 
-        Objects.requireNonNull(firstDate);
-        Objects.requireNonNull(secondDate);
+        requireNonNull(firstDate);
+        requireNonNull(secondDate);
 
         //guaranteed for the first argument to be the lower date
         return firstDate.isBefore(secondDate) ?
@@ -85,12 +86,12 @@ public class MarkService {
     }
 
     public List<Mark> listSince (@NotNull LocalDateTime startingDate) {
-        Objects.requireNonNull(startingDate);
+        requireNonNull(startingDate);
         return markDao.listSince(startingDate);
     }
 
     public List<Mark> list (@NotNull Integer numberOfMarks) {
-        Objects.requireNonNull(numberOfMarks);
+        requireNonNull(numberOfMarks);
         return markDao.listLast(numberOfMarks);
     }
 

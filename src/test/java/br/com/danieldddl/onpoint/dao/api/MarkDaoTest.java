@@ -1,9 +1,9 @@
 package br.com.danieldddl.onpoint.dao.api;
 
 import br.com.danieldddl.onpoint.dao.impl.MarkDaoImpl;
-import br.com.danieldddl.onpoint.dao.impl.MarkTypeDaoImpl;
+import br.com.danieldddl.onpoint.dao.impl.TypeDaoImpl;
 import br.com.danieldddl.onpoint.model.Mark;
-import br.com.danieldddl.onpoint.model.MarkType;
+import br.com.danieldddl.onpoint.model.Type;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -19,11 +19,11 @@ import static org.junit.Assert.*;
 public class MarkDaoTest {
 
     private MarkDao markDao;
-    private MarkTypeDao markTypeDao;
+    private TypeDao typeDao;
 
-    public MarkDaoTest (MarkDao markDao, MarkTypeDao markTypeDao) {
+    public MarkDaoTest (MarkDao markDao, TypeDao typeDao) {
         this.markDao = markDao;
-        this.markTypeDao = markTypeDao;
+        this.typeDao = typeDao;
     }
 
     /**
@@ -33,11 +33,11 @@ public class MarkDaoTest {
     @Parameterized.Parameters
     public static Collection<Object[]> instancesToTest() {
 
-        MarkTypeDao markTypeDao = new MarkTypeDaoImpl();
-        MarkDao markDao = new MarkDaoImpl(markTypeDao);
+        TypeDao typeDao = new TypeDaoImpl();
+        MarkDao markDao = new MarkDaoImpl(typeDao);
 
         return Arrays.asList(new Object[][] {
-                { markDao, markTypeDao }
+                { markDao, typeDao}
         });
     }
 
@@ -48,7 +48,7 @@ public class MarkDaoTest {
         Mark createdMarkWithoutType = markDao.persist(simpleMark);
 
         assertNotNull(createdMarkWithoutType.getId());
-        assertNull(createdMarkWithoutType.getMarkType());
+        assertNull(createdMarkWithoutType.getType());
         assertEquals(createdMarkWithoutType.getMarkedDate(), createdMarkWithoutType.getWhen()); //should be equal, none informed
     }
 
@@ -71,17 +71,17 @@ public class MarkDaoTest {
     }
 
     @Test
-    public void shouldPersistMarkWithType() {
+    public void shouldPersistMarkWithPersistedType() {
 
         String markTypeDescription = "Arrival";
-        MarkType markType = markTypeDao.getOrElsePersistByName(markTypeDescription);
+        Type persistedType = typeDao.getOrElsePersistWithName(markTypeDescription);
 
-        Mark markWithType = new Mark(markType);
+        Mark markWithType = new Mark(persistedType);
         Mark createdMarkWithType = markDao.persist(markWithType);
 
         assertNotNull(createdMarkWithType.getId());
-        assertNotNull(createdMarkWithType.getMarkType().getId());
-        assertEquals(createdMarkWithType.getMarkType().getName(), markTypeDescription);
+        assertNotNull(createdMarkWithType.getType().getId());
+        assertEquals(createdMarkWithType.getType().getName(), markTypeDescription);
     }
 
 }

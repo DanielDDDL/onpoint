@@ -1,16 +1,16 @@
 package br.com.danieldddl.onpoint.model;
 
-public class MarkType {
+public class Type {
 
     private Integer id;
     private String name;
 
-    public MarkType(Integer id, String name) {
+    public Type(Integer id, String name) {
         this.id = id;
         this.name = name.toLowerCase();
     }
 
-    public MarkType(String name) {
+    public Type(String name) {
         this.name = name;
     }
 
@@ -35,7 +35,7 @@ public class MarkType {
 
     @Override
     public String toString() {
-        return "MarkType{" +
+        return "Type{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
